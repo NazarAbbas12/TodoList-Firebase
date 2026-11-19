@@ -44,8 +44,8 @@ let addToDo = async()=>{
 
 document.querySelector("#add").addEventListener("click",addToDo);
 
-// fetching user
-let fetchUsers = async () => { 
+// fetching 
+let fetchTodos = async () => { 
     try {
         todos = []
         const todoData = await getDocs(collection(db, "todos")); 
@@ -55,8 +55,52 @@ let fetchUsers = async () => {
                 ...todo.data(), id: todo.id
             });
         });
-        console.log(usersData)
+        console.log(todoData)
     } catch (e) {
         console.error(e)
     }
 }
+fetchTodos().then(() => {
+    renderTodos();
+})
+
+
+let renderTodos = () => {
+    todoListElm.innerHTML = '';
+
+    todos.forEach((todoObj) => {
+        let todoBox = document.createElement('div');
+
+        let title = document.createElement('span');
+        title.innerText = todoObj.title;
+
+        let description = document.createElement('span');
+        description.innerText = todoObj.description;
+
+        let completeCheckbox = document.createElement('input');
+        completeCheckbox.type = "checkbox";
+        completeCheckbox.checked = todoObj.completed;
+
+        completeCheckbox.addEventListener("change", () => {
+            updateComplete(todoObj.id, completeCheckbox.checked);
+        });
+
+        let delBtn = document.createElement("button");
+        delBtn.innerText = "Delete";
+        delBtn.addEventListener("click", () => deleteUser(todoObj.id));
+
+        let updateBtn = document.createElement("button");
+        updateBtn.innerText = "Update";
+        updateBtn.addEventListener("click", () => updateUser(todoObj.id));
+
+        todoBox.appendChild(title);
+        todoBox.appendChild(description);
+        todoBox.appendChild(completeCheckbox);
+        todoBox.appendChild(delBtn);
+        todoBox.appendChild(updateBtn);
+
+        todoListElm.appendChild(todoBox);
+    });
+};
+
+fetchTodos();
