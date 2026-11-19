@@ -24,8 +24,8 @@ let addToDo = async()=>{
             alert("Title must be between 4 and 20 characters");
             return;
         }
-        if(description.value.trim().length < 5 || description.value.trim().length > 50){
-            alert("Description must be between 5 and 50 characters");
+        if(description.value.trim().length < 5 || description.value.trim().length > 100){
+            alert("Description must be between 5 and 100 characters");
             return;
         }
 
@@ -89,13 +89,24 @@ let renderTodos = () => {
         completeCheckbox.addEventListener("change", () => {
             updateComplete(todoObj.id, completeCheckbox.checked);
         });
+        if (todoObj.completed) {
+            title.style.textDecoration = "line-through";
+            title.style.color = "gray";
+
+            description.style.textDecoration = "line-through";
+            description.style.color = "gray";
+        }
 
         let delBtn = document.createElement("button");
-        delBtn.innerText = "Delete";
+        delBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+        delBtn.classList.add("delete-btn");
         delBtn.addEventListener("click", () => deleteTodo(todoObj.id));
 
         let updateBtn = document.createElement("button");
-        updateBtn.innerText = "Update";
+        updateBtn.innerHTML = '<i class="fa-solid fa-pen"></i>';
+        updateBtn.classList.add("update-btn");
+        updateBtn.dataset.completed = todoObj.completed;
+        updateBtn.disabled = todoObj.completed;
         updateBtn.addEventListener("click", () => updateTodo(todoObj.id));
 
         todoBox.appendChild(title);
@@ -108,7 +119,7 @@ let renderTodos = () => {
     });
 };
 
-
+// for task completion
 let updateComplete = async (id, checked) => {
     try {
         let findTodo = todos.find((todo) => todo.id === id);
@@ -157,6 +168,8 @@ let updateTodo = async (uid) => {
 
     document.querySelector('#add').style.display = "none";
     document.querySelector('#save').style.display = "inline";
+
+    toggleEditMode(true);
 };
 
 let saveTodo = async () => {
@@ -169,8 +182,8 @@ let saveTodo = async () => {
             return;
         }
 
-        if (description.length < 5 || description.length > 50) {
-            alert("Description must be between 5 and 50 characters");
+        if (description.length < 5 || description.length > 100) {
+            alert("Description must be between 5 and 100 characters");
             return;
         }
 
@@ -193,9 +206,24 @@ let saveTodo = async () => {
 
         await fetchTodos();
         renderTodos();
+        toggleEditMode(false);
 
     } catch (error) {
         console.error(error);
     }
 };
 document.querySelector('#save').addEventListener('click', saveTodo);
+
+
+let toggleEditMode = (isEditing) => {
+    document.querySelectorAll(".delete-btn").forEach((btn) => {
+        btn.disabled = isEditing;
+    });
+
+    document.querySelectorAll(".update-btn").forEach((btn) => {
+        btn.disabled = isEditing || btn.dataset.completed === "true";
+    });
+
+    document.querySelector("#add").disabled = isEditing;
+    document.querySelector("#save").disabled = false;
+};
