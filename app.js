@@ -1,5 +1,6 @@
 import { serverTimestamp,getDocs, collection, db, addDoc, deleteDoc, doc, updateDoc } from "./config.js";
 
+let editingId = null;
 
 let todos = [];
 let todoListElm = document.querySelector(".todo-lists");
@@ -37,6 +38,10 @@ let addToDo = async()=>{
         title.value = "";
         desc.value = "";
         alert("Document written with ID: "+ newDoc.id);
+
+        await fetchTodos();
+        renderTodos();
+
     } catch (e) {
         console.error("Error adding document: "+ e);
     }
@@ -87,11 +92,11 @@ let renderTodos = () => {
 
         let delBtn = document.createElement("button");
         delBtn.innerText = "Delete";
-        delBtn.addEventListener("click", () => deleteUser(todoObj.id));
+        delBtn.addEventListener("click", () => deleteTodo(todoObj.id));
 
         let updateBtn = document.createElement("button");
         updateBtn.innerText = "Update";
-        updateBtn.addEventListener("click", () => updateUser(todoObj.id));
+        updateBtn.addEventListener("click", () => updateTodo(todoObj.id));
 
         todoBox.appendChild(title);
         todoBox.appendChild(description);
@@ -103,4 +108,94 @@ let renderTodos = () => {
     });
 };
 
-fetchTodos();
+
+let updateComplete = async (id, checked) => {
+    try {
+        let findTodo = todos.find((todo) => todo.id === id);
+
+        if (!findTodo) return;
+
+        await updateDoc(doc(db, "todos", id), {
+            completed: checked
+        });
+
+        findTodo.completed = checked;
+
+        renderTodos();
+
+        console.log("Todo completion status updated");
+
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+/// delete 
+let deleteTodo = async (uid) => {
+    try {
+        await deleteDoc(doc(db, "todos", uid));
+        
+        todos = todos.filter((todo) => todo.id != uid);
+        renderTodos();
+
+        alert("Todo task successfully deleted");
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+///update
+let updateTodo = async (uid) => {
+    let todoObj = todos.find((todo) => todo.id === uid);
+
+    if (!todoObj) return;
+
+    document.querySelector('#title').value = todoObj.title;
+    document.querySelector('#desc').value = todoObj.description;
+
+    editingId = uid;
+
+    document.querySelector('#add').style.display = "none";
+    document.querySelector('#save').style.display = "inline";
+};
+
+let saveTodo = async () => {
+    try {
+        let title = document.querySelector('#title').value.trim();
+        let description = document.querySelector('#desc').value.trim();
+
+        if (title.length < 4 || title.length > 20) {
+            alert("Title must be between 4 and 20 characters");
+            return;
+        }
+
+        if (description.length < 5 || description.length > 50) {
+            alert("Description must be between 5 and 50 characters");
+            return;
+        }
+
+        const docRef = doc(db, "todos", editingId);
+
+        await updateDoc(docRef, {
+            title: title,
+            description: description
+        });
+
+        alert("Todo updated successfully!");
+
+        editingId = null;
+
+        document.querySelector('#title').value = "";
+        document.querySelector('#desc').value = "";
+
+        document.querySelector('#add').style.display = "inline";
+        document.querySelector('#save').style.display = "none";
+
+        await fetchTodos();
+        renderTodos();
+
+    } catch (error) {
+        console.error(error);
+    }
+};
+document.querySelector('#save').addEventListener('click', saveTodo);
