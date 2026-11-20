@@ -121,7 +121,6 @@ let renderTodos = () => {
 
         let emptyState = document.createElement("div");
         emptyState.classList.add("empty-state");
-
         let icon = document.createElement("i");
         icon.className = "fa-solid fa-clipboard-list";
 
@@ -132,9 +131,7 @@ let renderTodos = () => {
             : "No tasks found in this category.";
 
         emptyState.append(icon, message);
-
         todoListElm.appendChild(emptyState);
-
         return;
     }
 
@@ -144,20 +141,13 @@ let renderTodos = () => {
 
         let todoBox = document.createElement("div");
 
-
-        // TITLE
         let title = document.createElement("span");
         title.innerText = todoObj.title;
 
-
-        // DESCRIPTION
         let description = document.createElement("span");
         description.innerText = todoObj.description;
 
-
-        // CHECKBOX
         let completeCheckbox = document.createElement("input");
-
         completeCheckbox.type = "checkbox";
         completeCheckbox.checked = todoObj.completed;
 
@@ -166,28 +156,19 @@ let renderTodos = () => {
         });
 
 
-        // DELETE BUTTON
         let delBtn = document.createElement("button");
-
         delBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
         delBtn.classList.add("delete-btn");
-
         delBtn.disabled = Boolean(editingId);
-
         delBtn.addEventListener("click", () => {
             deleteTodo(todoObj.id);
         });
 
 
-        // UPDATE BUTTON
         let updateBtn = document.createElement("button");
-
         updateBtn.innerHTML = '<i class="fa-solid fa-pen"></i>';
         updateBtn.classList.add("update-btn");
-
         updateBtn.dataset.completed = todoObj.completed;
-
-        // EDIT MODE RESTRICTIONS
         updateBtn.disabled = Boolean(editingId) || todoObj.completed;
 
 
@@ -196,7 +177,6 @@ let renderTodos = () => {
         });
 
 
-        // APPEND ELEMENTS
         todoBox.append(
             title,
             description,
@@ -206,9 +186,7 @@ let renderTodos = () => {
         );
 
         todoListElm.appendChild(todoBox);
-
     });
-
 };
 
 
