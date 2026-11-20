@@ -1,22 +1,110 @@
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <title>Document</title>
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <title>My Tasks</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <div class="main">
-        <input type="text" name="" id="title" placeholder="Add title">
-        <input type="text" name="" id="desc" placeholder="Add description">
-        
-        <button id="add">ADD</button>
-        <button id="save" style="display:none">SAVE</button>
+    <div class="container">
+
+        <header class="header">
+            <h1>My Tasks<span>.</span></h1>
+            <p>Organize your day, one task at a time.</p>
+        </header>
+
+        <div class="main">
+
+            <h2>Create a task</h2>
+
+            <input
+                type="text"
+                id="title"
+                placeholder="Add a task title"
+            >
+
+            <input
+                type="text"
+                id="desc"
+                placeholder="Add a description"
+            >
+
+            <button id="add">
+                <i class="fa-solid fa-plus"></i>
+                Add Task
+            </button>
+
+            <button id="save" style="display:none">
+                <i class="fa-solid fa-check"></i>
+                Save Changes
+            </button>
+
+        </div>
+
+
+        <!-- Tasks Section -->
+        <section class="tasks-section">
+
+            <div class="tasks-header">
+                <h2>Your tasks</h2>
+                <p>Manage your daily activities</p>
+            </div>
+
+
+            <!-- Statistics -->
+            <div class="stats">
+
+                <div class="stat-card">
+                    <div>
+                        <p>Total Tasks</p>
+                        <h3 id="total-count">0</h3>
+                    </div>
+
+                    <i class="fa-solid fa-list-check"></i>
+                </div>
+
+
+                <div class="stat-card completed-stat">
+                    <div>
+                        <p>Completed</p>
+                        <h3 id="completed-count">0</h3>
+                    </div>
+
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+
+            </div>
+
+            <div class="filters">
+
+                <button class="filter-btn active" data-filter="all">
+                    All
+                </button>
+
+                <button class="filter-btn" data-filter="active">
+                    Active
+                </button>
+
+                <button class="filter-btn" data-filter="completed">
+                    Completed
+                </button>
+
+            </div>
+
+            <div class="todo-lists"></div>
+
+        </section>
     </div>
 
-    <div class="todo-lists"></div>
     <script type="module" src="app.js"></script>
 </body>
 </html>
